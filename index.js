@@ -3,7 +3,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 // add require fs
-const fs = require('fs');
+// const fs = require('fs'); <--- do I need this?
 // check later
 // require ('console.table') <--- use this one
 // const cTable = require('console.table');
@@ -198,31 +198,86 @@ function addDepartment() {
 
 
 
-
-
-
 function addEmployee() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'name',
-        message: 'Enter the name of the employee:'
-      }
-    ])
-    .then(answer => {
-      connection.query('INSERT INTO employee (first_name, last_name) VALUES (?, ?, ?)'  , [answer.first_name, answer.last_name], (err, res) => {
-        if (err) throw err;
-        console.log('Employee added successfully!');
-        // console.table(res);
-        startApp();
+  connection.query('select id, title from role', (err, res) => {
+    if (err) throw err;
+
+    const roleChoices = res.map(role => role.title);
+    
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: 'Enter the first name of the employee:'
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: 'Enter the last name of the employee:'
+        },
+        {
+          type: "list",
+          name: "roleTitle", 
+          message: "What is the employee's role?",
+          choices: roleChoices
+        },
+      ])
+      .then(answer => {
+        const selectedRole = res.find(role => role.title === answer.roleTitle);
+        
+        connection.query(
+          'INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)',
+          [answer.first_name, answer.last_name, selectedRole.id],
+          (err, res) => {
+            if (err) throw err;
+            console.log('Employee added successfully!');
+            startApp();
+          }
+        );
       });
-    });
-  //   fs.appendFile('schema.sql', sqlQuery, (err) => {
-  //     if (err) throw err;
-  //     console.log('Query added to schema.sql');
-  // });
+  });
 }
+
+
+// function addEmployee() {
+//   connection.query('select id, title from role', (err, res) => {
+
+
+//     const roleChoices = role.map(role => role.choices);
+//     const selectedRole = roles.find(role => role.title === roleAnswer.role);
+//     // const roleChoices = res
+//   inquirer
+//     .prompt([
+//       {
+//         type: 'input',
+//         name: 'first_name',
+//         message: 'Enter the first name of the employee:'
+//       },
+//       {
+//         type: 'input',
+//         name: 'last_name',
+//         message: 'Enter the last name of the employee:'
+//       },
+//       {
+//         type: "list",
+//         name: "roleId",
+//         message: "What is the employee's role?",
+//         choices: roleChoices
+//       },
+//     ])
+//     .then(answer => {
+//       connection.query('INSERT INTO employee (first_name, last_name) VALUES (?, ?)', [answer.first_name, answer.last_name, selectedRole.id], (err, res) => {
+//         if (err) throw err;
+//         console.log('Employee added successfully!');
+//         // console.table(res);
+//         startApp();
+//       });
+//     });
+// })}
+
+// connection.query('select id as value, title as name from role', (err, res) => {
+//   const roles = res
 
 
 
