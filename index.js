@@ -1,3 +1,5 @@
+// RIP Matthew Perry - Thank you for Chandler the Chan Chan Man
+
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 // add require fs
@@ -33,7 +35,7 @@ function startApp() {
 
           'View all employees',
 
-          'Add a departments',
+          'Add a department',
 
           'Add a role',
 
@@ -130,46 +132,7 @@ function viewEmployees() {
 
 
 // Function to add a department
-function addDepartment() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'name',
-        message: 'Enter the name of the department:'
-      }
-    ])
-    .then(answer => {
-      connection.query('INSERT INTO department SET ?', answer, (err, res) => {
-        if (err) throw err;
-        console.log('Department added successfully!');
-        startApp();
-      });
-    });
-}
 
-function addEmployee() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'name',
-        message: 'Enter the name of the department:'
-      }
-    ])
-
-    .then(answer => {
-      connection.query('INSERT INTO department SET ?', answer, (err, res) => {
-        if (err) throw err;
-        console.log('Department added successfully!');
-        startApp();
-      });
-    });
-    fs.appendFile('schema.sql', sqlQuery, (err) => {
-      if (err) throw err;
-      console.log('Query added to schema.sql');
-  });
-}
 
 function updateEmployeeRole() {
    connection.query('select id as value, concat(first_name, " ", last_name) as name from employee', (err, res) => {
@@ -209,6 +172,58 @@ const roles = res
 // add list of new departments 
 // syntax is ID AS VALUE, NAME AS NAME, 
 
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter the name of the department:'
+      }
+    ])
+    .then(answer => {
+      connection.query('INSERT INTO department (name) VALUES (?)', answer.name, (err, res) => {
+        if (err) throw err;
+        console.log('Department added successfully!');
+        // console.table(res);
+        startApp();
+      });
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+// function addEmployee() {
+//   inquirer
+//     .prompt([
+//       {
+//         type: 'input',
+//         name: 'name',
+//         message: 'Enter the name of the employee:'
+//       }
+//     ])
+//     .then(answer => {
+//       connection.query('INSERT INTO employee (first_name, last_name) VALUES (?) (?)', [answer.first_name, answer.last_name], (err, res) => {
+//         if (err) throw err;
+//         console.log('Employee added successfully!');
+//         // console.table(res);
+//         startApp();
+//       });
+//     });
+    // fs.appendFile('schema.sql', sqlQuery, (err) => {
+    //   if (err) throw err;
+    //   console.log('Query added to schema.sql');
+//   });
+// }
+
 function addRole() {
   inquirer
     .prompt([
@@ -216,12 +231,22 @@ function addRole() {
         type: 'input',
         name: 'name',
         message: 'Enter the name of the Role:'
+      },
+      {
+        type: 'number',
+        name: 'salary',
+        message: 'Select a salary'
+      },
+      {
+        name: 'department_id',
+        message: 'Enter the name of the Department'
       }
     ])
     .then(answer => {
-      connection.query('INSERT INTO role SET ?', answer, (err, res) => {
+      connection.query('INSERT INTO role (title, salary, department_id) VALUES (?)(?)(?)', [answer.title, answer.salary, answer.department_id], (err, res) => {
         if (err) throw err;
         console.log('Role added successfully!');
+        console.table(res);
         startApp();
       });
     });
