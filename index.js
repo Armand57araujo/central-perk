@@ -201,28 +201,30 @@ function addDepartment() {
 
 
 
-// function addEmployee() {
-//   inquirer
-//     .prompt([
-//       {
-//         type: 'input',
-//         name: 'name',
-//         message: 'Enter the name of the employee:'
-//       }
-//     ])
-//     .then(answer => {
-//       connection.query('INSERT INTO employee (first_name, last_name) VALUES (?) (?)', [answer.first_name, answer.last_name], (err, res) => {
-//         if (err) throw err;
-//         console.log('Employee added successfully!');
-//         // console.table(res);
-//         startApp();
-//       });
-//     });
-    // fs.appendFile('schema.sql', sqlQuery, (err) => {
-    //   if (err) throw err;
-    //   console.log('Query added to schema.sql');
-//   });
-// }
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter the name of the employee:'
+      }
+    ])
+    .then(answer => {
+      connection.query('INSERT INTO employee (first_name, last_name) VALUES (?, ?, ?)'  , [answer.first_name, answer.last_name], (err, res) => {
+        if (err) throw err;
+        console.log('Employee added successfully!');
+        // console.table(res);
+        startApp();
+      });
+    });
+  //   fs.appendFile('schema.sql', sqlQuery, (err) => {
+  //     if (err) throw err;
+  //     console.log('Query added to schema.sql');
+  // });
+}
+
+
 
 function addRole() {
   inquirer
@@ -243,10 +245,11 @@ function addRole() {
       }
     ])
     .then(answer => {
-      connection.query('INSERT INTO role (title, salary, department_id) VALUES (?)(?)(?)', [answer.title, answer.salary, answer.department_id], (err, res) => {
+      connection.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [answer.name, answer.salary, answer.department_id], (err, res) => {
         if (err) throw err;
         console.log('Role added successfully!');
-        console.table(res);
+        // console.table(res);
+
         startApp();
       });
     });
